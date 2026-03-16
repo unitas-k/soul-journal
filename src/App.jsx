@@ -5,10 +5,10 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbzDAjt5b9R2fcZZkhvm7-O9
 // ────────────────────────────────────────────────────────────────
 
 const TABS = [
-  { id: "A", label: "A", title: "現実と想念", subtitle: "現実からパターンを知る" },
-  { id: "B", label: "B", title: "違和感", subtitle: "違和感を大切にする" },
-  { id: "C", label: "C", title: "言動の癖", subtitle: "反射的に出る癖を知る" },
-  { id: "D", label: "D", title: "体調のサイン", subtitle: "体との対話" },
+  { id: "A", label: "A", title: "現実と想念", subtitle: "現実とパターン" },
+  { id: "B", label: "B", title: "違和感", subtitle: "違和感メモ" },
+  { id: "C", label: "C", title: "言動の癖", subtitle: "反射の癖" },
+  { id: "D", label: "D", title: "体調のサイン", subtitle: "体からのサイン" },
 ];
 
 const EMOTIONS = ["不安", "焦り", "怒り", "悲しみ", "虚しさ", "孤独", "恥", "罪悪感", "無力感", "恐れ", "その他"];
@@ -37,7 +37,7 @@ function MoonTag({ moon, setMoon }) {
     <div>
       <div style={{ background: "#f5f0ea", borderRadius: 8, padding: "8px 14px", marginBottom: 12, display: "inline-flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 18 }}>{today.emoji}</span>
-        <span style={{ fontSize: 14, color: "#8a6a50", fontFamily: FONT }}>
+        <span style={{ fontSize: 14, color: "#2c1e10", fontFamily: FONT }}>
           今日は<strong>「{today.label}」</strong>頃です
           {today.days !== null && today.days <= 2 && <span>（{today.days === 0 ? "ちょうど今日" : `あと${today.days}日`}）</span>}
         </span>
@@ -100,17 +100,17 @@ function Tag({ label, selected, onClick }) {
   );
 }
 function Label({ children }) {
-  return <div style={{ fontSize: 14, color: "#a08060", letterSpacing: 1.5, marginBottom: 8, fontFamily: FONT }}>{children}</div>;
+  return <div style={{ fontSize: 14, color: "#2c1e10", letterSpacing: 1.5, marginBottom: 8, fontFamily: FONT }}>{children}</div>;
 }
 function Note({ children }) {
   return (
-    <div style={{ background: "#f5f0ea", borderLeft: "3px solid #c8a882", padding: "10px 14px", borderRadius: "0 8px 8px 0", marginBottom: 24, fontSize: 14, color: "#8a6a50", lineHeight: 1.9, fontFamily: FONT }}>
+    <div style={{ background: "#f5f0ea", borderLeft: "3px solid #c8a882", padding: "10px 14px", borderRadius: "0 8px 8px 0", marginBottom: 24, fontSize: 14, color: "#2c1e10", lineHeight: 1.9, fontFamily: FONT }}>
       {children}
     </div>
   );
 }
 function SmallNote({ children }) {
-  return <div style={{ fontSize: 13, color: "#b8a090", marginBottom: 10, lineHeight: 1.8, fontFamily: FONT }}>{children}</div>;
+  return <div style={{ fontSize: 13, color: "#5a4035", marginBottom: 10, lineHeight: 1.8, fontFamily: FONT }}>{children}</div>;
 }
 function TextArea({ value, onChange, placeholder, rows = 3 }) {
   return (
@@ -264,7 +264,7 @@ function ConsentScreen({ onComplete }) {
                     ・記録はクライアントIDで管理され、フルネームは使用しません<br />
                     ・データは田中香代子のGoogleアカウント内にのみ保存されます<br />
                     ・第三者への共有は行いません<br />
-                    ・削除を希望する場合は田中香代子にお申し出ください
+                    ・データの削除はいつでも申し出いただければ、速やかに全データを削除します
                   </>
                 ) : (
                   <>
@@ -346,7 +346,7 @@ function SectionA({ settings }) {
     <div>
       <Note>現実は単なる周波数の反映。良い悪いではなく、ただのサイン。ふーん、くらいで。</Note>
       <Label>① 現実（何が起きた？）</Label>
-      <TextArea value={reality} onChange={e => setReality(e.target.value)} placeholder="例：また同じ人に同じようなことを言われた" />
+      <TextArea value={reality} onChange={e => setReality(e.target.value)} placeholder="例：また〇〇さんから（嫌なことを）言われた、など" />
       <Label>① 感情（その現実を見た時の自分のリアクション）</Label>
       <SmallNote>感情は「現実を見た時の反応」。想念（根本原因）とは別のものです。まず自分が何を感じたかだけを見てみてください。</SmallNote>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: emotion.includes("その他") ? 12 : 20 }}>
@@ -359,7 +359,7 @@ function SectionA({ settings }) {
       <SmallNote>想念とは「〜でなければならない」「〜されるべき」「自分は〜だ」という深い信念のこと。感情の一歩奥にあるものです。</SmallNote>
       <TextArea value={thought} onChange={e => setThought(e.target.value)} placeholder="例：私は評価されなければ価値がない、など" />
       <Label>③ その想念はいつ何が起こって形成されたもの？</Label>
-      <TextArea value={origin} onChange={e => setOrigin(e.target.value)} placeholder="例：小学生の頃、発表会で失敗して笑われた時、くらいな気がする" rows={2} />
+      <TextArea value={origin} onChange={e => setOrigin(e.target.value)} placeholder="例：小学生の頃、発表会で失敗して笑われた時、など" rows={2} />
       <SaveButton onClick={save} saving={saving} />
       <RecordList records={saved} onDelete={deleteRecord} loading={loading} />
     </div>
@@ -610,13 +610,16 @@ export default function SoulJournal() {
         </div>
       </div>
       <div style={{ display: "flex", borderBottom: "1px solid #e8dfd4", background: "#fdfaf7", position: "sticky", top: 0, zIndex: 10 }}>
-        {TABS.map(t => (
+        {TABS.map((t, i) => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
-            flex: 1, padding: "14px 4px 10px", border: "none", background: "none", cursor: "pointer",
-            borderBottom: tab === t.id ? "2px solid #c8a882" : "2px solid transparent", transition: "all 0.2s",
+            flex: 1, padding: "12px 4px 10px", border: "none", cursor: "pointer",
+            borderRight: i < TABS.length - 1 ? "1px solid #e8dfd4" : "none",
+            borderBottom: tab === t.id ? "2px solid #c8a882" : "2px solid transparent",
+            background: tab === t.id ? "#fdf6ee" : "transparent",
+            transition: "all 0.15s",
           }}>
             <div style={{ fontSize: 18, fontWeight: "bold", color: tab === t.id ? "#c8a882" : "#b8a090", fontFamily: FONT }}>{t.label}</div>
-            <div style={{ fontSize: 11, color: tab === t.id ? "#a08060" : "#c8b8a8", letterSpacing: 0.5, marginTop: 2, fontFamily: FONT }}>{t.subtitle}</div>
+            <div style={{ fontSize: 11, color: "#2c1e10", letterSpacing: 0.3, marginTop: 3, fontFamily: FONT }}>{t.subtitle}</div>
           </button>
         ))}
       </div>
