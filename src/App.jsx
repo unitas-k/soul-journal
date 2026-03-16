@@ -195,7 +195,8 @@ function ConsentScreen({ onComplete }) {
   const [agreed, setAgreed] = useState(false);
   const [step, setStep] = useState(1);
 
-  const canProceed = step === 1 ? mode !== null : agreed && (mode === "local" || clientId.trim() !== "");
+  const idValid = mode === "local" || /^U-\d{3,}$/.test(clientId.trim());
+  const canProceed = step === 1 ? mode !== null : agreed && (mode === "local" || (clientId.trim() !== "" && idValid));
 
   const handleNext = () => {
     if (step === 1) { setStep(2); return; }
@@ -252,8 +253,13 @@ function ConsentScreen({ onComplete }) {
             {mode === "sync" && (
               <div style={{ marginBottom: 24 }}>
                 <Label>田中香代子から伝えられたIDを入力してください</Label>
-                <SmallNote>例：U-001　　※フルネームは入力しないでください</SmallNote>
-                <InputField value={clientId} onChange={e => setClientId(e.target.value)} placeholder="例：U-001" />
+                <SmallNote>例：U-101　　※ハイフンあり・半角で入力してください</SmallNote>
+                <InputField value={clientId} onChange={e => setClientId(e.target.value)} placeholder="例：U-101" />
+                {clientId.trim() !== "" && !idValid && (
+                  <div style={{ fontSize: 13, color: "#c0392b", marginTop: -14, marginBottom: 14, fontFamily: FONT }}>
+                    IDの形式が正しくありません。U-101のように入力してください。
+                  </div>
+                )}
               </div>
             )}
             <div style={{ background: "#f5f0ea", borderRadius: 12, padding: "18px 20px", marginBottom: 24 }}>
